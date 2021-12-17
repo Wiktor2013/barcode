@@ -1,28 +1,37 @@
 import code128
-import io
 from PIL import Image, ImageDraw, ImageFont
 import sqlite3
-from sqlite3 import Error
+import webbrowser
+
+conn = sqlite3.connect("magazyn.db")
+cur = conn.cursor()
+cur.execute('''CREATE TABLE IF NOT EXISTS articles (
+    id	integer,
+    code text,
+    lot_number text,
+    name text,
+    measure	text,
+    initial_quantity real,
+    delivery real,
+    usage real,
+    end_quantity real,
+    real_quantity real,
+    PRIMARY KEY("id")
+)''')
+odczynnik = input("Podaj nazwę, kod albo lot odczynnika")
+# def select_lotnumber(conn):
 
 
-def create_connection(magazyn):
-    """ create a database connection to a SQLite database """
-    conn = None
-    try:
-        conn = sqlite3.connect(magazyn)
-        print(sqlite3.version)
-    except Error as e:
-        print(e)
-
-    return conn
-
-def select_lotnumber(conn):
-    cur = con.cursor()
-    cur.execute("SELECT article_lot_number FROM magazyn")
-    rows = cur.sele
-    for row in rows:
-        barcode_param = row
-        print(row)
+cur.execute("SELECT lot_number FROM articles WHERE code=?", (odczynnik, ))
+x = cur.fetchall()
+barcode_param = str(x[0]).replace("\'", '')
+print(type(barcode_param))
+print(barcode_param)
+# print(row)
+# for row in rows:
+# barcode_param = row
+#     # print(row)barcode_param
+#     print(barcode_param)
 # Get barcode value
 # barcode_param = 'Lot 160221'
 
@@ -34,7 +43,7 @@ top_bott_margin = 70
 l_r_margin = 10
 new_height = barcode_image.height + (2 * top_bott_margin)
 new_width = barcode_image.width + (2 * l_r_margin)
-new_image = Image.new( 'RGB', (new_width, new_height), (255, 255, 255))
+new_image = Image.new('RGB', (new_width, new_height), (255, 255, 255))
 
 # put barcode on new image
 barcode_y = 100
@@ -58,20 +67,24 @@ footer_font = ImageFont.truetype("UbuntuMono-R.ttf", footer_size)
 company_name = 'BLIRT S.A.'
 id1 = 'Magazyn Kładki'
 license_num = 'ENZYMES'
-product_type = 'TEV Protease'
+cur.execute("SELECT name FROM articles WHERE code=?", (odczynnik, ))
+nieobrobiony = str(cur.fetchone()).replace("\'", '')
+print(nieobrobiony)
+x = nieobrobiony.split(",")
+product_type = x[0]
 center_product_type = (barcode_image.width / 2) - len(product_type) * 5
 center_barcode_value = (barcode_image.width / 2) - len(barcode_param) * 8
 
 # Draw text on picture
-draw.text( (l_r_margin, 0), company_name, fill=(0, 0, 0), font=h1_font)
-draw.text( (l_r_margin, h1_size), id1, fill=(0, 0, 0), font=h2_font)
-draw.text( (l_r_margin + 2, (h1_size + h2_size + 5)), license_num, fill=(0, 0, 0), font=h3_font)
-draw.text( (center_product_type, (h1_size + h2_size + h3_size)), product_type, fill=(0, 0, 0), font=footer_font)
-draw.text( (center_barcode_value, (new_height - footer_size - 15)), barcode_param, fill=(0, 0, 0), font=h2_font)
+draw.text((l_r_margin, 0), company_name, fill=(0, 0, 0), font=h1_font)
+draw.text((l_r_margin, h1_size), id1, fill=(0, 0, 0), font=h2_font)
+draw.text((l_r_margin + 2, (h1_size + h2_size + 5)), license_num, fill=(0, 0, 0), font=h3_font)
+draw.text((center_product_type, (h1_size + h2_size + h3_size)), product_type, fill=(0, 0, 0), font=footer_font)
+draw.text((center_barcode_value, (new_height - footer_size - 15)), barcode_param, fill=(0, 0, 0), font=h2_font)
 
 # save in file
 new_image.save('barcode_image.png', 'PNG')
 
 # show in default viewer
-import webbrowser
+
 webbrowser.open('barcode_image.png')
