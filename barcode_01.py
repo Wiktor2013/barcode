@@ -5,11 +5,11 @@ import sqlite3
 from sqlite3 import Error
 
 
-def create_connection(database_barcodes):
+def create_connection(magazyn):
     """ create a database connection to a SQLite database """
     conn = None
     try:
-        conn = sqlite3.connect(database_barcodes)
+        conn = sqlite3.connect(magazyn)
         print(sqlite3.version)
     except Error as e:
         print(e)
@@ -18,10 +18,10 @@ def create_connection(database_barcodes):
 
 def select_lotnumber(conn):
     cur = con.cursor()
-    barcode_param = cur.execute("SELECT article_lot_number FROM storage")
-
-    rows = cur.fetchall()
+    cur.execute("SELECT article_lot_number FROM magazyn")
+    rows = cur.sele
     for row in rows:
+        barcode_param = row
         print(row)
 # Get barcode value
 # barcode_param = 'Lot 160221'
