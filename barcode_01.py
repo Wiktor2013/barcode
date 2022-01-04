@@ -24,7 +24,7 @@ odczynnik = input("Podaj nazwę, kod albo lot odczynnika")
 
 cur.execute("SELECT lot_number FROM articles WHERE code=?", (odczynnik, ))
 x = cur.fetchall()
-barcode_param = str(x[0]).replace("\'", '')
+barcode_param = str(x[0][0])
 print(type(barcode_param))
 print(barcode_param)
 # print(row)
@@ -68,10 +68,8 @@ company_name = 'BLIRT S.A.'
 id1 = 'Magazyn Kładki'
 license_num = 'ENZYMES'
 cur.execute("SELECT name FROM articles WHERE code=?", (odczynnik, ))
-nieobrobiony = str(cur.fetchone()).replace("\'", '')
-print(nieobrobiony)
-x = nieobrobiony.split(",")
-product_type = x[0]
+nieobrobiony = cur.fetchone()[0]
+product_type = nieobrobiony
 center_product_type = (barcode_image.width / 2) - len(product_type) * 5
 center_barcode_value = (barcode_image.width / 2) - len(barcode_param) * 8
 
