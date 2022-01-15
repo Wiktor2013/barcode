@@ -1,26 +1,26 @@
 '''https://stackoverflow.com/questions/65471637/how-to-include-barcode-value-with-actual-barcode-python-code128-module'''
-import logging
-import azure.functions as func
-import code128
-import io
-from PIL import Image
+# import logging
+# import azure.functions as func
+# import code128
+# import io
+# from PIL import Image
+
+########### pierwszy przyklad ###########
+# barcode_param = '1234'
+# barcode_bytes = io.BytesIO()
+#
+# logging.info('##### Generating barcode... #####')
+# barcode = code128.image(barcode_param, height=100).save(barcode_bytes, "PNG")
+# barcode_bytes.seek(0)
+# logging.info('##### Barcode successfully generated #####')
+# return func.HttpResponse(
+#     barcode_bytes.getvalue(),
+#     status_code=200,
+#     mimetype='image/png')
+#     barcode_bytes.close()
 
 
-barcode_param = '1234'
-barcode_bytes = io.BytesIO()
-
-logging.info('##### Generating barcode... #####')
-barcode = code128.image(barcode_param, height=100).save(barcode_bytes, "PNG")
-barcode_bytes.seek(0)
-logging.info('##### Barcode successfully generated #####')
-return func.HttpResponse(
-    barcode_bytes.getvalue(),
-    status_code=200,
-    mimetype='image/png'
-    )
-    barcode_bytes.close()
-
-
+####### drugi przyklad #############
 
 import code128
 import io
